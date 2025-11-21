@@ -24,8 +24,9 @@ model User {
 
   categories Category[]
   schedules  Schedule[]
-  todos      Todo[]
   scheduleRules ScheduleRule[]
+
+
 }
 
 model Schedule {
@@ -35,32 +36,23 @@ model Schedule {
 
   startDate String
   startTime   String?
+  endDate   String?
+  endTime   String?
 
-  endDate   String
-  endDateTime   String?
-
+  isToDo    Boolean @default(false)
   isCompleted Boolean @default(false)
   isImportant  Boolean @default(false) //중요일정(알람)
 
-  ruleId String
-  rule   ScheduleRule @relation(fields: [ruleId], references: [id])
+  ruleId String?
+  rule   ScheduleRule? @relation(fields: [ruleId], references: [id])
 
   userId String
   user  User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([category])
+  @@index([isCompleted])
 }
-
-model Todo{
-  id  String  @id @default(uuid())
-  name  String
-  datetime  String
-
-  isCompleted Boolean @default(false)
-  isImportant  Boolean @default(false) //중요할일(알람)
-
-  userId String
-  user  User   @relation(fields: [userId], references: [id])
-}
-
 
 model Category {
   id    String @id @default(uuid())
@@ -70,19 +62,22 @@ model Category {
   user  User?  @relation(fields: [userId], references: [id])
 
   @@unique([userId, name]) // 유저별 카테고리 이름 중복 방지
+
+  @@index([userId, name])
 }
 
 model ScheduleRule{
   id       String   @id @default(uuid())
   name     String
 
-  startDate String
-  endDate   String
-
+  periodStartDate String
   startTime   String?
+
+  periodEndDate   String?
   endTime   String?
   category  String
 
+  isToDo    Boolean @default(false)
   isImportant  Boolean @default(false) //중요일정(알람)
 
   dayofWeek   Int?  //0(SUN)~6(SAT)
