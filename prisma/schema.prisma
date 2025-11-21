@@ -15,7 +15,88 @@ datasource db {
 }
 
 model User {
-  id    Int @id @default(autoincrement())
+  id    String @id @default(uuid())
   name  String
   email String @unique
+
+  birthDate DateTime?
+  createdAt DateTime @default(now())
+
+  categories Category[]
+  schedules  Schedule[]
+  scheduleRules ScheduleRule[]
+
+
+}
+
+model Schedule {
+  id    String @id @default(uuid())
+  name  String
+  category String
+
+  startDate String
+  startTime   String?
+  endDate   String?
+  endTime   String?
+
+  isToDo    Boolean @default(false)
+  isCompleted Boolean @default(false)
+  isImportant  Boolean @default(false) //중요일정(알람)
+
+  ruleId String?
+  rule   ScheduleRule? @relation(fields: [ruleId], references: [id])
+
+  userId String
+  user  User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([category])
+  @@index([isCompleted])
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String
+
+  userId String? // 생성 유저 ID (optional, NULL인 경우 공통 카테고리)
+  user  User?  @relation(fields: [userId], references: [id])
+
+  @@unique([userId, name]) // 유저별 카테고리 이름 중복 방지
+
+  @@index([userId, name])
+}
+
+model ScheduleRule{
+  id       String   @id @default(uuid())
+  name     String
+
+  periodStartDate String
+  startTime   String?
+
+  periodEndDate   String?
+  endTime   String?
+  category  String
+
+  isToDo    Boolean @default(false)
+  isImportant  Boolean @default(false) //중요일정(알람)
+
+  dayofWeek   Int?  //0(SUN)~6(SAT)
+  weekOfMonth Int?  //1~5주차
+  monthOfYear  Int? //1~12월
+
+  ruleType  RuleType
+  schedules Schedule[]
+
+  userId String
+  user  User   @relation(fields: [userId], references: [id])
+  @@unique([name, userId]) // 유저별 스케줄 룰 이름 중복 방지
+}
+
+
+
+enum RuleType{
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
 }
