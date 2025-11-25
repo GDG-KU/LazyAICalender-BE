@@ -1,16 +1,18 @@
-import { IsString, IsOptional, IsDateString, IsBoolean } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsOptional, IsDateString, IsBoolean } from 'class-validator';
 
 export class ReadScheduleDto {
   @IsString()
+  @IsNotEmpty
   @IsOptional()
   category?: string;
 
   @IsDateString()
+  @IsNotEmpty()
   @IsOptional()
-  startDatetime?: string;
+  startDateTime: string;
 
   @IsDateString()
+  @IsNotEmpty()
   @IsOptional()
-  endDatetime?: string;
+  endDateTime: string;
 }
