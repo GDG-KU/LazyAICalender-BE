@@ -31,11 +31,10 @@ model Schedule {
   name     String
   category String
 
-  startDate String
-  startTime String?
-  endDate   String?
-  endTime   String?
+  startDatetime DateTime
+  endDatetime   DateTime?
 
+  isAllDay    Boolean @default(false)
   isToDo      Boolean @default(false)
   isCompleted Boolean @default(false)
   isImportant Boolean @default(false) //중요일정(알람)
@@ -67,12 +66,13 @@ model ScheduleRule {
   name String
 
   periodStartDate String
-  startTime       String?
-
   periodEndDate String?
-  endTime       String?
   category      String
 
+  startDatetime DateTime
+  endDatetime   DateTime?
+
+  isAllDay    Boolean @default(false)
   isToDo      Boolean @default(false)
   isImportant Boolean @default(false) //중요일정(알람)
 
