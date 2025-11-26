@@ -76,7 +76,7 @@ model ScheduleRule {
   isToDo      Boolean @default(false)
   isImportant Boolean @default(false) //중요일정(알람)
 
-  dayofWeek   Int? //0(SUN)~6(SAT)
+  dayOfWeek   Int? //0(SUN)~6(SAT)
   weekOfMonth Int? //1~5주차
   monthOfYear Int? //1~12월
 
