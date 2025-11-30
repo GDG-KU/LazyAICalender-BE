@@ -1,18 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true, // DTO에 정의되지 않은 속성은 자동으로 제거
-      forbidNonWhitelisted: true, // DTO에 정의되지 않은 속성이 들어오면 에러 발생
-      transform: true, // 요청 데이터를 DTO 클래스의 인스턴스로 변환 (class-transformer 활성화)
-    }),
-  );
   // Swagger 설정
   const config = new DocumentBuilder()
       .setTitle('귀차니스트를 위한 AI 캘린더 API') // 문서 제목
