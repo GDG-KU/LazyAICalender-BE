@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -20,34 +19,31 @@ model User {
   email String @unique
 
   birthDate DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
-  categories Category[]
-  schedules  Schedule[]
+  categories    Category[]
+  schedules     Schedule[]
   scheduleRules ScheduleRule[]
-
-
 }
 
 model Schedule {
-  id    String @id @default(uuid())
-  name  String
+  id       String @id @default(uuid())
+  name     String
   category String
 
-  startDate String
-  startTime   String?
-  endDate   String?
-  endTime   String?
+  startDatetime DateTime
+  endDatetime   DateTime?
 
-  isToDo    Boolean @default(false)
+  isAllDay    Boolean @default(false)
+  isToDo      Boolean @default(false)
   isCompleted Boolean @default(false)
-  isImportant  Boolean @default(false) //중요일정(알람)
+  isImportant Boolean @default(false) //중요일정(알람)
 
   ruleId String?
   rule   ScheduleRule? @relation(fields: [ruleId], references: [id])
 
   userId String
-  user  User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([category])
@@ -55,46 +51,45 @@ model Schedule {
 }
 
 model Category {
-  id    String @id @default(uuid())
-  name  String
+  id   String @id @default(uuid())
+  name String
 
   userId String? // 생성 유저 ID (optional, NULL인 경우 공통 카테고리)
-  user  User?  @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
 
   @@unique([userId, name]) // 유저별 카테고리 이름 중복 방지
-
   @@index([userId, name])
 }
 
-model ScheduleRule{
-  id       String   @id @default(uuid())
-  name     String
+model ScheduleRule {
+  id   String @id @default(uuid())
+  name String
 
   periodStartDate String
-  startTime   String?
+  periodEndDate String?
+  category      String
 
-  periodEndDate   String?
-  endTime   String?
-  category  String
+  startDatetime DateTime
+  endDatetime   DateTime?
 
-  isToDo    Boolean @default(false)
-  isImportant  Boolean @default(false) //중요일정(알람)
+  isAllDay    Boolean @default(false)
+  isToDo      Boolean @default(false)
+  isImportant Boolean @default(false) //중요일정(알람)
 
-  dayofWeek   Int?  //0(SUN)~6(SAT)
-  weekOfMonth Int?  //1~5주차
-  monthOfYear  Int? //1~12월
+  dayOfWeek   Int? //0(SUN)~6(SAT)
+  weekOfMonth Int? //1~5주차
+  monthOfYear Int? //1~12월
 
   ruleType  RuleType
   schedules Schedule[]
 
   userId String
-  user  User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
   @@unique([name, userId]) // 유저별 스케줄 룰 이름 중복 방지
 }
 
-
-
-enum RuleType{
+enum RuleType {
   DAILY
   WEEKLY
   MONTHLY
